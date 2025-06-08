@@ -14,13 +14,11 @@ import { MesRuchesComponent } from './mes-ruches/mes-ruches.component';
 @NgModule({
   declarations: [
     CreerFermeComponent,
-    ListeFermesComponent,
     DashboardFermierComponent,
     FermierHeaderComponent,
     EditSiteModalComponent
   ],
   imports: [
-    MesRuchesComponent,
     CommonModule,
     ReactiveFormsModule,
     FormsModule,

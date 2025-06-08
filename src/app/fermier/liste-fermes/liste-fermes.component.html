@@ -1,1 +1,249 @@
-<p>liste-fermes works!</p>
+<div class="fermes-container">
+  <!-- Header -->
+  <div class="header">
+    <h2>Mes Fermes</h2>
+    <button class="btn-add" (click)="openCreateFarmModal()">
+      <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+      </svg>
+      Nouvelle ferme
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="search-bar">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+      </svg>
+      <input 
+        type="text" 
+        class="glow-input" 
+        placeholder="Rechercher une ferme..." 
+        [(ngModel)]="searchTerm" 
+        (keyup)="applyFilters()"
+      >
+    </div>
+    <div class="filter-options">
+      <div class="filter-group">
+        <label>Trier par:</label>
+        <select class="glow-input" [(ngModel)]="sortBy" (change)="applyFilters()">
+          <option value="name">Nom</option>
+          <option value="createdAt">Date de création</option>
+          <option value="siteCount">Nombre de sites</option>
+          <option value="hiveCount">Nombre de ruches</option>
+          <option value="production">Production</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Ordre:</label>
+        <select class="glow-input" [(ngModel)]="sortOrder" (change)="applyFilters()">
+          <option value="asc">Ascendant</option>
+          <option value="desc">Descendant</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Farm Cards -->
+  <div class="farms-grid">
+    <div *ngFor="let farm of filteredFarms" class="farm-card">
+      <div class="farm-header">
+        <h3 class="farm-name">{{ farm.name }}</h3>
+        <div class="farm-actions">
+          <button class="btn-edit" (click)="editFarm(farm)">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 000-1.41l-2.34-2.34a.996.996 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+            </svg>
+          </button>
+          <button class="btn-delete" (click)="deleteFarm(farm)">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="farm-content">
+        <div class="farm-stats">
+          <div class="stat-item">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
+            </svg>
+            <span><strong>{{ farm.sites.length }}</strong> sites</span>
+          </div>
+          <div class="stat-item">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16h-9v-6h9v6zm-10 0H3V5h8v14zm10-8H12V5h9v6z"/>
+            </svg>
+            <span><strong>{{ getTotalHives(farm) }}</strong> ruches</span>
+          </div>
+          <div class="stat-item">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+            </svg>
+            <span><strong>{{ getTotalProduction(farm) }}</strong> kg récoltés</span>
+          </div>
+        </div>
+        
+        <div class="farm-details">
+          <div class="details-row">
+            <span class="label">Localisation:</span>
+            <span>{{ farm.location }}</span>
+          </div>
+          <div class="details-row">
+            <span class="label">Création:</span>
+            <span>{{ farm.createdAt }}</span>
+          </div>
+          <div class="details-row">
+            <span class="label">Types de miel:</span>
+            <div class="honey-types">
+              <span class="honey-tag" *ngFor="let type of farm.honeyTypes">{{ type }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="farm-sites" *ngIf="farm.sites.length > 0">
+          <h4>Sites</h4>
+          <div class="sites-list">
+            <div class="site-item" *ngFor="let site of farm.sites">
+              <span class="site-name">{{ site.name }}</span>
+              <span class="site-hives">{{ site.hives.length }} ruches</span>
+              <span class="site-production">{{ site.production }} kg</span>
+              <a class="btn-view" [href]="'/fermier/sites?siteId=' + site.id">
+                <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M15 12c0 1.654-1.346 3-3 3s-3-1.346-3-3 1.346-3 3-3 3 1.346 3 3zm9-.449s-4.252 8.449-11.985 8.449c-7.18 0-12.015-8.449-12.015-8.449s4.446-7.551 12.015-7.551c7.694 0 11.985 7.551 11.985 7.551zm-7 .449c0-2.757-2.243-5-5-5s-5 2.243-5 5 2.243 5 5 5 5-2.243 5-5z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="filteredFarms.length === 0">
+    <svg class="empty-icon" width="64" height="64" viewBox="0 0 24 24" fill="currentColor" opacity="0.3">
+      <path d="M18 4h-2v7.9l2-2zM4 4h2v16H4zm6 0h2v4h-2zm0 6h2v4h-2zm0 6h2v4h-2z"/>
+    </svg>
+    <h3>Aucune ferme trouvée</h3>
+    <p>Commencez par créer votre première ferme ou modifiez vos filtres.</p>
+    <button class="btn-add" (click)="openCreateFarmModal()">
+      <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+      </svg>
+      Créer une ferme
+    </button>
+  </div>
+
+  <!-- Farm Modal -->
+  <div class="modal" *ngIf="showFarmModal" (click)="closeFarmModal($event)">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>{{ editMode ? 'Modifier la ferme' : 'Nouvelle ferme' }}</h3>
+          <button class="btn-close" (click)="closeFarmModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7A.996.996 0 105.7 7.11L10.59 12 5.7 16.89a.996.996 0 101.41 1.41L12 13.41l4.89 4.89a.996.996 0 101.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/>
+            </svg>
+          </button>
+        </div>
+        <form [formGroup]="farmForm" (ngSubmit)="saveFarm()">
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="farmName">Nom de la ferme *</label>
+              <input type="text" id="farmName" class="glow-input" formControlName="name" required>
+              <div class="error-message" *ngIf="farmForm.get('name')?.invalid && farmForm.get('name')?.touched">
+                Le nom de la ferme est requis
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="farmLocation">Localisation *</label>
+              <input type="text" id="farmLocation" class="glow-input" formControlName="location" required>
+              <div class="error-message" *ngIf="farmForm.get('location')?.invalid && farmForm.get('location')?.touched">
+                La localisation est requise
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label>Types de miel produits</label>
+              <div class="honey-types-picker">
+                <div 
+                  *ngFor="let type of availableHoneyTypes" 
+                  class="honey-type-option" 
+                  [class.selected]="selectedHoneyTypes.includes(type)"
+                  (click)="toggleHoneyType(type)">
+                  {{ type }}
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="farmDescription">Description</label>
+              <textarea id="farmDescription" class="glow-input" formControlName="description" rows="3"></textarea>
+            </div>
+            
+            <div class="form-group" *ngIf="editMode">
+              <label>Sites associés</label>
+              <div class="sites-table" *ngIf="currentFarm?.sites?.length">
+                <div class="table-header">
+                  <span>Nom du site</span>
+                  <span>Ruches</span>
+                  <span>Production</span>
+                </div>
+                <div class="table-row" *ngFor="let site of currentFarm?.sites">
+                  <span>{{ site.name }}</span>
+                  <span>{{ site.hives.length }}</span>
+                  <span>{{ site.production }} kg</span>
+                </div>
+              </div>
+              <div class="no-sites" *ngIf="!currentFarm?.sites?.length">
+                Aucun site associé pour le moment
+              </div>
+            </div>
+          </div>
+          
+          <div class="modal-footer">
+            <button type="button" class="btn-cancel" (click)="closeFarmModal()">Annuler</button>
+            <button type="submit" class="btn-save" [disabled]="farmForm.invalid">
+              {{ editMode ? 'Enregistrer' : 'Créer' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Confirmation Modal -->
+  <div class="modal" *ngIf="showConfirmModal" (click)="closeConfirmModal($event)">
+    <div class="modal-dialog confirm-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Confirmation</h3>
+          <button class="btn-close" (click)="closeConfirmModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7A.996.996 0 105.7 7.11L10.59 12 5.7 16.89a.996.996 0 101.41 1.41L12 13.41l4.89 4.89a.996.996 0 101.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="confirm-message">
+            <svg class="warning-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+            </svg>
+            Êtes-vous sûr de vouloir supprimer la ferme <strong>{{ farmToDelete?.name }}</strong> ?
+          </p>
+          <p class="confirm-details">
+            Cette action supprimera également tous les sites et ruches associés et ne pourra pas être annulée.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeConfirmModal()">Annuler</button>
+          <button type="button" class="btn-delete" (click)="confirmDeleteFarm()">Supprimer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
