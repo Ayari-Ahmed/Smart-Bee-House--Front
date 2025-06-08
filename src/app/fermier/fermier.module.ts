@@ -8,6 +8,7 @@ import { ListeFermesComponent } from './liste-fermes/liste-fermes.component';
 import { DashboardFermierComponent } from './dashboard-fermier/dashboard-fermier.component';
 import { FermierHeaderComponent } from './fermier-header/fermier-header.component';
 import { EditSiteModalComponent } from './edit-site-modal/edit-site-modal.component';
+import { MesRuchesComponent } from './mes-ruches/mes-ruches.component';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { EditSiteModalComponent } from './edit-site-modal/edit-site-modal.compon
     EditSiteModalComponent
   ],
   imports: [
+    MesRuchesComponent,
     CommonModule,
     ReactiveFormsModule,
     FormsModule,

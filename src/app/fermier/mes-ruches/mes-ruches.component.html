@@ -1,0 +1,319 @@
+<div class="ruches-container">
+  <div class="header">
+    <h2>Mes Ruches</h2>
+    <button class="btn-create" (click)="createNewHive()">
+      <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+      </svg>
+      Ajouter une ruche
+    </button>
+  </div>
+
+  <div class="content-container">
+    <!-- Filters Panel -->
+    <div class="filters-panel">
+      <h3>Filtres</h3>
+      <form [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+        <div class="form-group">
+          <label for="siteFilter">Site</label>
+          <select id="siteFilter" class="glow-input" formControlName="site">
+            <option *ngFor="let site of sites" [value]="site">{{ site }}</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="typeFilter">Type de ruche</label>
+          <select id="typeFilter" class="glow-input" formControlName="type">
+            <option value="">Tous les types</option>
+            <option *ngFor="let type of hiveTypes" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="statusFilter">Statut</label>
+          <select id="statusFilter" class="glow-input" formControlName="status">
+            <option value="">Tous les statuts</option>
+            <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="productionFilter">Production minimale (kg)</label>
+          <input type="number" id="productionFilter" class="glow-input" formControlName="productionMin" min="0">
+        </div>
+        
+        <div class="filter-actions">
+          <button type="button" class="btn-reset" (click)="resetFilters()">Réinitialiser</button>
+          <button type="submit" class="btn-apply">Appliquer</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Main Panel -->
+    <div class="main-panel">
+      <!-- Hives List -->
+      <div class="hives-list" *ngIf="!selectedHive && !editMode">
+        <div class="hives-header">
+          <h3>Ruches ({{ filteredHives.length }})</h3>
+        </div>
+        
+        <div class="hives-grid">
+          <div class="hive-card" *ngFor="let hive of filteredHives" (click)="selectHive(hive)">
+            <div class="hive-header">
+              <span class="hive-id">{{ hive.id }}</span>
+              <span class="hive-status" [ngClass]="{
+                'status-active': hive.status === 'Active',
+                'status-inactive': hive.status === 'Inactive',
+                'status-prep': hive.status === 'En préparation',
+                'status-treat': hive.status === 'En traitement'
+              }">{{ hive.status }}</span>
+            </div>
+            
+            <div class="hive-body">
+              <div class="hive-info-row">
+                <span class="info-label">Type</span>
+                <span class="info-value">{{ hive.type }}</span>
+              </div>
+              <div class="hive-info-row">
+                <span class="info-label">Site</span>
+                <span class="info-value">{{ hive.site }}</span>
+              </div>
+              <div class="hive-info-row">
+                <span class="info-label">Production</span>
+                <span class="info-value">{{ hive.production }} kg</span>
+              </div>
+              <div class="hive-info-row">
+                <span class="info-label">Santé</span>
+                <div class="health-bar">
+                  <div class="health-fill" [style.width.%]="hive.healthScore"></div>
+                  <span class="health-text">{{ hive.healthScore }}%</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="hive-footer">
+              <div class="hive-alerts" *ngIf="getAlertCount(hive) > 0">
+                <span class="alert-badge">{{ getAlertCount(hive) }}</span>
+                <span class="alert-text">Alerte{{ getAlertCount(hive) > 1 ? 's' : '' }}</span>
+              </div>
+              <div class="hive-date">
+                <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19a2 2 0 002 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7v-5z"/>
+                </svg>
+                {{ hive.lastInspection }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hive Details View -->
+      <div class="hive-details" *ngIf="selectedHive && !editMode">
+        <div class="details-header">
+          <div class="details-title">
+            <span class="hive-id">{{ selectedHive.id }}</span>
+            <span class="hive-status" [ngClass]="{
+              'status-active': selectedHive.status === 'Active',
+              'status-inactive': selectedHive.status === 'Inactive',
+              'status-prep': selectedHive.status === 'En préparation',
+              'status-treat': selectedHive.status === 'En traitement'
+            }">{{ selectedHive.status }}</span>
+          </div>
+          <div class="details-actions">
+            <button class="btn-edit" (click)="editHive()">
+              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+              </svg>
+              Modifier
+            </button>
+            <button class="btn-delete" (click)="deleteHive()">
+              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+              </svg>
+              Supprimer
+            </button>
+          </div>
+        </div>
+
+        <div class="details-content">
+          <div class="info-panel">
+            <h4>Informations générales</h4>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Type</span>
+                <span class="info-value">{{ selectedHive.type }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Site</span>
+                <span class="info-value">{{ selectedHive.site }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Installation</span>
+                <span class="info-value">{{ selectedHive.installationDate }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Reine marquée</span>
+                <span class="info-value">{{ selectedHive.queenMarked }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Dernière inspection</span>
+                <span class="info-value">{{ selectedHive.lastInspection }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Indice de santé</span>
+                <div class="health-bar">
+                  <div class="health-fill" [style.width.%]="selectedHive.healthScore"></div>
+                  <span class="health-text">{{ selectedHive.healthScore }}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-panel">
+            <h4>Production</h4>
+            <div class="chart-container">
+              <canvas id="hiveProductionChart"></canvas>
+            </div>
+            <div class="production-stats">
+              <div class="stat-item">
+                <span class="stat-value">{{ selectedHive.production }} kg</span>
+                <span class="stat-label">Production totale</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">{{ 
+                  selectedHive.productionHistory && selectedHive.productionHistory.length > 0 ? 
+                  selectedHive.productionHistory[selectedHive.productionHistory.length - 1] - 
+                  selectedHive.productionHistory[selectedHive.productionHistory.length - 2] : 0 
+                }} kg</span>
+                <span class="stat-label">Mois dernier</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="alerts-panel" *ngIf="getAlertCount(selectedHive) > 0">
+            <h4>Alertes</h4>
+            <div class="alert-list">
+              <div class="alert-item" *ngIf="selectedHive.alerts.collecte">
+                <svg class="alert-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 11c-.55 0-1-.45-1-1V8c0-.55.45-1 1-1s1 .45 1 1v4c0 .55-.45 1-1 1zm1 4h-2v-2h2v2z"/>
+                </svg>
+                <div class="alert-content">
+                  <span class="alert-title">Collecte de miel</span>
+                  <span class="alert-desc">La ruche approche sa capacité maximale, prévoir une récolte prochainement</span>
+                </div>
+              </div>
+              <div class="alert-item" *ngIf="selectedHive.alerts.extension">
+                <svg class="alert-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 11c-.55 0-1-.45-1-1V8c0-.55.45-1 1-1s1 .45 1 1v4c0 .55-.45 1-1 1zm1 4h-2v-2h2v2z"/>
+                </svg>
+                <div class="alert-content">
+                  <span class="alert-title">Extension nécessaire</span>
+                  <span class="alert-desc">La colonie est en croissance rapide, prévoir l'ajout d'une hausse</span>
+                </div>
+              </div>
+              <div class="alert-item" *ngIf="selectedHive.alerts.traitement">
+                <svg class="alert-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 11c-.55 0-1-.45-1-1V8c0-.55.45-1 1-1s1 .45 1 1v4c0 .55-.45 1-1 1zm1 4h-2v-2h2v2z"/>
+                </svg>
+                <div class="alert-content">
+                  <span class="alert-title">Traitement sanitaire</span>
+                  <span class="alert-desc">Des signes de présence de parasites (varroa) ont été détectés</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="interventions-panel">
+            <h4>Interventions</h4>
+            <div class="table-container">
+              <table class="interventions-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Technicien</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let intervention of selectedHive.interventions">
+                    <td>{{ intervention.date }}</td>
+                    <td>{{ intervention.type }}</td>
+                    <td>{{ intervention.technician }}</td>
+                    <td>{{ intervention.notes }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Hive Form -->
+      <div class="hive-edit" *ngIf="editMode">
+        <div class="edit-header">
+          <h3>{{ newHive.id ? 'Modifier la ruche' : 'Nouvelle ruche' }}</h3>
+        </div>
+
+        <form (ngSubmit)="saveHive()">
+          <div class="edit-content">
+            <div class="form-column">
+              <div class="form-group">
+                <label for="hiveSite">Site</label>
+                <select id="hiveSite" class="glow-input" [(ngModel)]="newHive.site" name="site">
+                  <option *ngFor="let site of sites.slice(1)" [value]="site">{{ site }}</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="hiveType">Type de ruche</label>
+                <select id="hiveType" class="glow-input" [(ngModel)]="newHive.type" name="type">
+                  <option *ngFor="let type of hiveTypes" [value]="type">{{ type }}</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="hiveStatus">Statut</label>
+                <select id="hiveStatus" class="glow-input" [(ngModel)]="newHive.status" name="status">
+                  <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="hiveQueen">Reine marquée</label>
+                <input type="text" id="hiveQueen" class="glow-input" [(ngModel)]="newHive.queenMarked" name="queenMarked">
+              </div>
+            </div>
+
+            <div class="form-column">
+              <div class="form-group">
+                <label for="hiveInstallDate">Date d'installation</label>
+                <input type="text" id="hiveInstallDate" class="glow-input" [(ngModel)]="newHive.installationDate" name="installationDate" placeholder="JJ/MM/AAAA">
+              </div>
+
+              <div class="form-group">
+                <label for="hiveInspection">Dernière inspection</label>
+                <input type="text" id="hiveInspection" class="glow-input" [(ngModel)]="newHive.lastInspection" name="lastInspection" placeholder="JJ/MM/AAAA">
+              </div>
+
+              <div class="form-group">
+                <label for="hiveProduction">Production (kg)</label>
+                <input type="number" id="hiveProduction" class="glow-input" [(ngModel)]="newHive.production" name="production" min="0">
+              </div>
+
+              <div class="form-group">
+                <label for="hiveHealth">Indice de santé</label>
+                <input type="number" id="hiveHealth" class="glow-input" [(ngModel)]="newHive.healthScore" name="healthScore" min="0" max="100">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" (click)="cancelEdit()">Annuler</button>
+            <button type="submit" class="btn-save">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

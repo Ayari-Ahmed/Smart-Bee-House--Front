@@ -1,0 +1,162 @@
+<div class="sites-container">
+  <div class="header">
+    <h2>Mes Sites</h2>
+    <button class="btn-create" (click)="createNewSite()">
+      <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+      </svg>
+      Créer un nouveau site
+    </button>
+  </div>
+
+  <div class="content-container">
+    <!-- Map view -->
+    <div class="map-panel">
+      <div id="sitesMap" class="sites-map"></div>
+    </div>
+
+    <!-- Sites list or details -->
+    <div class="sites-panel">
+      <!-- Site list when no site is selected -->
+      <div class="sites-list" *ngIf="!selectedSite && !editMode">
+        <div class="site-card" *ngFor="let site of sites" (click)="selectSite(site)">
+          <div class="site-info">
+            <h3>{{ site.name }}</h3>
+            <p>{{ site.location }}</p>
+            <div class="site-stats">
+              <span>
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 5c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM6 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                </svg>
+                {{ site.ruches.length }} ruches
+              </span>
+              <span>
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                </svg>
+                {{ site.totalProduction }} kg
+              </span>
+            </div>
+            <p class="site-ferme">{{ site.ferme }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Site details when a site is selected -->
+      <div class="site-details" *ngIf="selectedSite && !editMode">
+        <div class="site-header">
+          <h3>{{ selectedSite.name }}</h3>
+          <div class="site-actions">
+            <button class="btn-edit" (click)="editSite()">
+              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+              </svg>
+              Modifier
+            </button>
+            <button class="btn-delete" (click)="deleteSite()">
+              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+              </svg>
+              Supprimer
+            </button>
+          </div>
+        </div>
+
+        <div class="site-info-grid">
+          <div class="info-card">
+            <span class="info-label">Location</span>
+            <span class="info-value">{{ selectedSite.location }}</span>
+          </div>
+          <div class="info-card">
+            <span class="info-label">Ferme</span>
+            <span class="info-value">{{ selectedSite.ferme }}</span>
+          </div>
+          <div class="info-card">
+            <span class="info-label">Coordonnées</span>
+            <span class="info-value">{{ selectedSite.coordinates[0] }}, {{ selectedSite.coordinates[1] }}</span>
+          </div>
+          <div class="info-card">
+            <span class="info-label">Date de création</span>
+            <span class="info-value">{{ selectedSite.creationDate }}</span>
+          </div>
+          <div class="info-card">
+            <span class="info-label">Dernière inspection</span>
+            <span class="info-value">{{ selectedSite.lastInspection }}</span>
+          </div>
+          <div class="info-card">
+            <span class="info-label">Production totale</span>
+            <span class="info-value">{{ selectedSite.totalProduction }} kg</span>
+          </div>
+        </div>
+
+        <div class="site-description">
+          <h4>Description</h4>
+          <p>{{ selectedSite.description }}</p>
+        </div>
+
+        <div class="site-ruches">
+          <h4>Ruches sur ce site</h4>
+          <div class="ruches-list">
+            <div class="ruche-item" *ngFor="let ruche of selectedSite.ruches">
+              <div class="ruche-info">
+                <span class="ruche-id">{{ ruche.id }}</span>
+                <span class="ruche-type">{{ ruche.type }}</span>
+                <span class="ruche-production">{{ ruche.production }} kg</span>
+              </div>
+              <span class="ruche-status" [ngClass]="{'active': ruche.status === 'Active', 'inactive': ruche.status !== 'Active'}">
+                {{ ruche.status }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit site form -->
+      <div class="site-edit" *ngIf="editMode">
+        <h3>{{ newSite.id ? 'Modifier le site' : 'Créer un nouveau site' }}</h3>
+        <form (ngSubmit)="saveSite()">
+          <div class="form-group">
+            <label for="siteName">Nom du site</label>
+            <input type="text" id="siteName" class="glow-input" [(ngModel)]="newSite.name" name="siteName" required>
+          </div>
+          <div class="form-group">
+            <label for="siteLocation">Localité</label>
+            <input type="text" id="siteLocation" class="glow-input" [(ngModel)]="newSite.location" name="siteLocation" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="siteLat">Latitude</label>
+              <input type="number" id="siteLat" class="glow-input" [(ngModel)]="newSite.coordinates[0]" name="siteLat" required>
+            </div>
+            <div class="form-group">
+              <label for="siteLon">Longitude</label>
+              <input type="number" id="siteLon" class="glow-input" [(ngModel)]="newSite.coordinates[1]" name="siteLon" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="siteFerme">Ferme rattachée</label>
+            <input type="text" id="siteFerme" class="glow-input" [(ngModel)]="newSite.ferme" name="siteFerme" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="siteRucheCount">Capacité (ruches)</label>
+              <input type="number" id="siteRucheCount" class="glow-input" [(ngModel)]="newSite.rucheCount" name="siteRucheCount" required>
+            </div>
+            <div class="form-group">
+              <label for="siteActiveRuches">Ruches actives</label>
+              <input type="number" id="siteActiveRuches" class="glow-input" [(ngModel)]="newSite.activeRuches" name="siteActiveRuches" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="siteDescription">Description</label>
+            <textarea id="siteDescription" class="glow-input" [(ngModel)]="newSite.description" name="siteDescription" rows="3"></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" (click)="cancelEdit()">Annuler</button>
+            <button type="submit" class="btn-save">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,314 @@
+<div class="production-container">
+  <div class="header">
+    <h2>Production et Collecte</h2>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content-container">
+    <!-- Filters & Summary -->
+    <div class="top-section">
+      <!-- Filters -->
+      <div class="filters-panel">
+        <div class="filters-header">
+          <h3>Filtres</h3>
+        </div>
+        <form [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+          <div class="filters-content">
+            <div class="form-group">
+              <label for="periodFilter">Période</label>
+              <select id="periodFilter" class="glow-input" formControlName="period">
+                <option *ngFor="let period of periods" [value]="period">{{ period }}</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="siteFilter">Site</label>
+              <select id="siteFilter" class="glow-input" formControlName="site">
+                <option *ngFor="let site of sites" [value]="site">{{ site }}</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="typeFilter">Type de miel</label>
+              <select id="typeFilter" class="glow-input" formControlName="honeyType">
+                <option value="">Tous les types</option>
+                <option *ngFor="let type of honeyTypes" [value]="type">{{ type }}</option>
+              </select>
+            </div>
+
+            <div class="filter-actions">
+              <button type="submit" class="btn-apply">Appliquer</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="summary-cards">
+        <div class="summary-card">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+              <path d="M12 6c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zm0 10c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/>
+            </svg>
+          </div>
+          <div class="card-content">
+            <span class="card-value">{{ getTotalYearlyProduction() }} kg</span>
+            <span class="card-label">Production annuelle</span>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+            </svg>
+          </div>
+          <div class="card-content">
+            <span class="card-value">{{ getTotalHarvestedThisYear() }} kg</span>
+            <span class="card-label">Récolté cette année</span>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="card-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 15l-5-5h3V9h4v4h3l-5 5z"/>
+            </svg>
+          </div>
+          <div class="card-content">
+            <span class="card-value">{{ getEstimatedRemainingProduction() }} kg</span>
+            <span class="card-label">À récolter</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-section">
+      <!-- Line Chart -->
+      <div class="chart-panel line-chart-panel">
+        <div class="panel-header">
+          <h3>Évolution de la production</h3>
+        </div>
+        <div class="chart-container">
+          <canvas id="productionChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Donut Chart -->
+      <div class="chart-panel donut-chart-panel">
+        <div class="panel-header">
+          <h3>Répartition de la production</h3>
+          <div class="chart-toggle">
+            <button class="toggle-btn active" (click)="toggleChartData('site')">Par site</button>
+            <button class="toggle-btn" (click)="toggleChartData('type')">Par type</button>
+          </div>
+        </div>
+        <div class="donut-container">
+          <canvas id="donutChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Harvests Section -->
+    <div class="harvests-section">
+      <div class="harvests-header">
+        <h3>Historique des récoltes</h3>
+        <button class="btn-primary" (click)="startNewHarvest()">
+          <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+          </svg>
+          Nouvelle récolte
+        </button>
+      </div>
+
+      <div class="harvests-content">
+        <!-- Harvest List -->
+        <div class="harvest-list">
+          <div class="list-header">
+            <span>ID</span>
+            <span>Date</span>
+            <span>Site</span>
+            <span>Type</span>
+            <span>Quantité</span>
+            <span>Qualité</span>
+          </div>
+          <div class="list-body">
+            <div *ngFor="let harvest of harvestHistory" class="harvest-row" 
+                [class.selected]="selectedHarvest === harvest && !newHarvestMode"
+                (click)="selectHarvest(harvest)">
+              <span>{{ harvest.id }}</span>
+              <span>{{ harvest.date }}</span>
+              <span>{{ harvest.site }}</span>
+              <span>{{ harvest.type }}</span>
+              <span class="quantity">{{ harvest.quantity }} kg</span>
+              <span class="quality">
+                <span [class]="'quality-badge ' + harvest.quality.toLowerCase()">{{ harvest.quality }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Harvest Details or New Harvest Form -->
+        <div class="harvest-details" *ngIf="selectedHarvest && !newHarvestMode">
+          <div class="details-header">
+            <h4>Détails de la récolte</h4>
+            <span class="details-id">{{ selectedHarvest.id }}</span>
+          </div>
+
+          <div class="details-content">
+            <div class="details-grid">
+              <div class="details-item">
+                <span class="detail-label">Date</span>
+                <span class="detail-value">{{ selectedHarvest.date }}</span>
+              </div>
+              <div class="details-item">
+                <span class="detail-label">Site</span>
+                <span class="detail-value">{{ selectedHarvest.site }}</span>
+              </div>
+              <div class="details-item">
+                <span class="detail-label">Type de miel</span>
+                <span class="detail-value">{{ selectedHarvest.type }}</span>
+              </div>
+              <div class="details-item">
+                <span class="detail-label">Quantité</span>
+                <span class="detail-value">{{ selectedHarvest.quantity }} kg</span>
+              </div>
+              <div class="details-item">
+                <span class="detail-label">Qualité</span>
+                <span class="detail-value">
+                  <span [class]="'quality-badge ' + selectedHarvest.quality.toLowerCase()">{{ selectedHarvest.quality }}</span>
+                </span>
+              </div>
+            </div>
+
+            <div class="ruches-list">
+              <h5>Ruches associées</h5>
+              <div class="ruches-chips">
+                <span class="ruche-chip" *ngFor="let ruche of selectedHarvest.ruches">{{ ruche }}</span>
+              </div>
+            </div>
+
+            <div class="harvest-notes">
+              <h5>Notes</h5>
+              <p>{{ selectedHarvest.notes || 'Aucune note disponible.' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- New Harvest Form -->
+        <div class="harvest-form" *ngIf="newHarvestMode">
+          <div class="form-header">
+            <h4>Nouvelle récolte</h4>
+          </div>
+
+          <div class="form-content">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="harvestDate">Date</label>
+                <input type="text" id="harvestDate" class="glow-input" [(ngModel)]="newHarvest.date" placeholder="JJ/MM/AAAA">
+              </div>
+              <div class="form-group">
+                <label for="harvestSite">Site</label>
+                <select id="harvestSite" class="glow-input" [(ngModel)]="newHarvest.site">
+                  <option *ngFor="let site of sites.slice(1)" [value]="site">{{ site }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="harvestType">Type de miel</label>
+                <select id="harvestType" class="glow-input" [(ngModel)]="newHarvest.type">
+                  <option *ngFor="let type of honeyTypes" [value]="type">{{ type }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="harvestQuality">Qualité</label>
+                <select id="harvestQuality" class="glow-input" [(ngModel)]="newHarvest.quality">
+                  <option value="Premium">Premium</option>
+                  <option value="Standard">Standard</option>
+                  <option value="Économique">Économique</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="harvestQuantity">Quantité (kg)</label>
+              <input type="number" id="harvestQuantity" class="glow-input" [(ngModel)]="newHarvest.quantity" min="0" step="0.5">
+            </div>
+
+            <div class="form-group">
+              <label>Ruches sélectionnées</label>
+              <div class="ruche-selection">
+                <div *ngFor="let ruche of getAvailableRuchesBySelectedSite()" 
+                     class="ruche-option" 
+                     [class.selected]="isRucheSelected(ruche)"
+                     (click)="toggleRucheSelection(ruche)">
+                  {{ ruche }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="harvestNotes">Notes</label>
+              <textarea id="harvestNotes" class="glow-input" [(ngModel)]="newHarvest.notes" rows="3"></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-cancel" (click)="cancelNewHarvest()">Annuler</button>
+              <button type="button" class="btn-save" (click)="saveNewHarvest()">Enregistrer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Planned Harvests -->
+    <div class="planned-section">
+      <div class="planned-header">
+        <h3>Récoltes planifiées</h3>
+        <button class="btn-secondary" (click)="toggleSitePlanningModal()">
+          <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5v-5z"/>
+          </svg>
+          Planifier
+        </button>
+      </div>
+
+      <div class="planned-list">
+        <div class="planned-item" *ngFor="let plan of plannedHarvests">
+          <div class="planned-info">
+            <div class="planned-header-row">
+              <span class="planned-id">{{ plan.id }}</span>
+              <span class="planned-status" [class.confirmed]="plan.status === 'Programmée'">{{ plan.status }}</span>
+            </div>
+            <div class="planned-details">
+              <span><strong>Date:</strong> {{ plan.plannedDate }}</span>
+              <span><strong>Site:</strong> {{ plan.site }}</span>
+              <span><strong>Ruches:</strong> {{ plan.ruches.join(', ') }}</span>
+              <span><strong>Estimation:</strong> {{ plan.estimatedQuantity }} kg</span>
+            </div>
+          </div>
+          <div class="planned-action" *ngIf="!plan.notified">
+            <button class="btn-notify">
+              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+              </svg>
+              Notifier
+            </button>
+          </div>
+          <div class="planned-action" *ngIf="plan.notified">
+            <span class="status-notified">
+              <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              </svg>
+              Notifié
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
