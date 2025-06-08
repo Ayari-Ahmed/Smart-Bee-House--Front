@@ -1,0 +1,31 @@
+<header class="navbar navbar-expand-lg navbar-dark bg-warning shadow-sm px-4 py-2">
+  <a class="navbar-brand d-flex align-items-center" routerLink="/fermier">
+    <i class="bi bi-bezier2 fs-4 me-2 text-dark"></i>
+    <span class="fw-bold text-dark">Ma Ferme Apicole</span>
+  </a>
+
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#fermierNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="fermierNavbar">
+    <ul class="navbar-nav ms-auto me-3">
+      <li class="nav-item">
+        <a class="nav-link text-dark fw-semibold" routerLink="/fermier">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-dark fw-semibold" routerLink="/fermier/fermes">Mes Fermes</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link text-dark fw-semibold" routerLink="/fermier/ruches">Mes Ruches</a>
+      </li>
+    </ul>
+
+    <div class="d-flex align-items-center">
+      <span class="fw-medium text-dark me-3 d-none d-md-inline">Bienvenue, Fermier</span>
+      <button class="btn btn-outline-dark btn-sm" (click)="logout()">
+        <i class="bi bi-box-arrow-right me-1"></i> Logout
+      </button>
+    </div>
+  </div>
+</header>

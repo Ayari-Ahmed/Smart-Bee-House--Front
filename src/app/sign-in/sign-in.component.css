@@ -1,0 +1,50 @@
+
+/* Custom Animations and Styles */
+@keyframes beeSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+  100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+}
+
+.bee-spin {
+  animation: beeSpin 12s linear infinite;
+}
+
+.bee-glow {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+.glow-input {
+  transition: all 0.3s ease;
+}
+
+.glow-input:focus {
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+  border-color: #ffc107 !important;
+}
+
+.glow-input:hover {
+  border-color: #ffa000;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+/* Ensure Bootstrap animations work */
+.animate__fadeInUp {
+  animation-duration: 0.8s;
+}
+
+/* Adjust footer for smaller screens */
+@media (max-width: 576px) {
+  footer p {
+    font-size: 0.8rem;
+  }
+}

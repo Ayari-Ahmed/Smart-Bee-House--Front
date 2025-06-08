@@ -1,0 +1,66 @@
+
+<section class="min-vh-100 d-flex flex-column align-items-center justify-content-center position-relative overflow-hidden">
+  <!-- Honeycomb Background -->
+  <div class="position-absolute w-100 h-100" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.85), rgba(255, 243, 163, 0.65)), url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22%3E%3Cpath fill=%22%23FFD700%22 fill-opacity=%220.4%22 d=%22M40 0C36.4 0 32.8 2.3 30.6 6.7L20.6 26.7C18.4 31.1 20.6 36.4 25 38.6L45 48.6C49.4 50.8 54.7 48.6 56.9 44.2L66.9 24.2C69.1 19.8 66.9 14.5 62.5 12.3L42.5 2.3C41.4 1.1 40.7 0 40 0zM40 40C36.4 40 32.8 42.3 30.6 46.7L20.6 66.7C18.4 71.1 20.6 76.4 25 78.6L45 88.6C49.4 90.8 54.7 88.6 56.9 84.2L66.9 64.2C69.1 59.8 66.9 54.5 62.5 52.3L42.5 42.3C41.4 41.1 40.7 40 40 40z%22/%3E%3C/svg%3E'); background-size: 120px;"></div>
+
+  <!-- Sign-In Card -->
+  <div class="card shadow-lg p-5 border-0 animate__animated animate__fadeInUp" style="max-width: 500px; width: 100%; background: rgba(255, 255, 255, 0.97); border-radius: 25px;">
+    <div class="text-center mb-5">
+      <div class="position-relative d-inline-block mb-3">
+        <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center bee-glow" style="width: 90px; height: 90px;">
+          <svg class="text-warning bee-spin" width="50" height="50" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2a10 10 0 00-7.3 16.7l4.6 4.6a2 2 0 002.8 0l4.6-4.6A10 10 0 0012 2zm0 18.6l-4.6 4.6a1 1 0 01-1.4 0l-4.6-4.6a8 8 0 1112.8 0l-4.6 4.6a1 1 0 01-1.4 0zM12 6a4 4 0 100 8 4 4 0 000-8z"/>
+          </svg>
+        </div>
+      </div>
+      <h1 class="display-5 fw-bold text-dark">Smart Bee House</h1>
+      <p class="text-muted lead">Buzz into Your Smart Hive</p>
+    </div>
+
+    <!-- Form -->
+    <form (ngSubmit)="onSubmit()">
+      <div class="mb-4">
+        <label for="email" class="form-label fw-semibold text-dark">Email Address</label>
+        <input
+          type="email"
+          class="form-control form-control-lg border-warning glow-input"
+          id="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="you@smarbeehouse.com"
+          required
+        />
+      </div>
+      <div class="mb-4">
+        <label for="password" class="form-label fw-semibold text-dark">Password</label>
+        <input
+          type="password"
+          class="form-control form-control-lg border-warning glow-input"
+          id="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="••••••••"
+          required
+        />
+      </div>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="rememberMe">
+          <label class="form-check-label text-muted" for="rememberMe">Remember me</label>
+        </div>
+        <a href="#" class="text-warning text-decoration-none fw-medium">Forgot Password?</a>
+      </div>
+      <button type="submit" class="btn btn-warning btn-lg w-100 text-dark fw-bold shadow-sm hover-scale">Sign In</button>
+    </form>
+
+    <!-- Footer -->
+    <p class="text-center text-muted mt-4 mb-0">
+      New to the hive? <button routerLink="/signup" class="text-warning fw-medium text-decoration-none">Create an Account</button>
+    </p>
+  </div>
+
+  <!-- Page Footer -->
+  <footer class="position-absolute bottom-0 w-100 text-center py-3">
+    <p class="text-muted small">© 2025 Smart Bee House. All rights reserved.</p>
+  </footer>
+</section>

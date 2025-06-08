@@ -1,0 +1,276 @@
+<section class="dashboard">
+  <!-- Honeycomb Background -->
+  <div class="honeycomb-bg"></div>
+
+  <!-- Sidebar -->
+  <nav class="sidebar" [ngClass]="{'collapsed': sidebarCollapsed}">
+    <div class="sidebar-header">
+      <svg class="bee-logo" width="40" height="40" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2a10 10 0 00-7.3 16.7l4.6 4.6a2 2 0 002.8 0l4.6-4.6A10 10 0 0012 2zm0 18.6l-4.6 4.6a1 1 0 01-1.4 0l-4.6-4.6a8 8 0 1112.8 0l-4.6 4.6a1 1 0 01-1.4 0zM12 6a4 4 0 100 8 4 4 0 000-8z"/>
+      </svg>
+      <span class="sidebar-title">Smar Bee House</span>
+      <button class="sidebar-toggle d-lg-none" (click)="toggleSidebar()">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+        </svg>
+      </button>
+    </div>
+    <div class="sidebar-profile">
+      <div class="profile-avatar">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2a10 10 0 00-10 10 10 10 0 0020 0A10 10 0 0012 2zm0 4a4 4 0 110 8 4 4 0 010-8zm0 12a6 6 0 00-6 6h12a6 6 0 00-6-6z"/>
+        </svg>
+      </div>
+      <div class="profile-info">
+        <span class="profile-name">Fermier</span>
+        <span class="profile-role">Beekeeper</span>
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <ul class="nav">
+      <li>
+        <a class="nav-item active" href="#">
+          <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+          <span class="nav-text">Production</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-item" href="#">
+          <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3.5l8.66 5v10l-8.66 5-8.66-5v-10L12 3.5zm0 2.5L5.34 9.5v7L12 20.5l6.66-3.5v-7L12 6z"/>
+          </svg>
+          <span class="nav-text">Ruches</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-item" href="#">
+          <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 8a4 4 0 100 8 4 4 0 000-8zm0 6a2 2 0 110-4 2 2 0 010 4zm8-6h-2.82a8.96 8.96 0 00-1.08-3.46l2.4-1.8-1.41-1.41-2.4 1.8A8.96 8.96 0 0012 2v-2h-2v2a8.96 8.96 0 00-3.46 1.08l-2.4-1.8-1.41 1.41 2.4 1.8A8.96 8.96 0 002 8H0v2h2a8.96 8.96 0 001.08 3.46l-2.4 1.8 1.41 1.41 2.4-1.8A8.96 8.96 0 0010 18v2h2v-2a8.96 8.96 0 003.46-1.08l2.4 1.8 1.41-1.41-2.4-1.8A8.96 8.96 0 0020 10h2V8z"/>
+          </svg>
+          <span class="nav-text">Settings</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-item" (click)="logout()">
+          <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17 7l-1.41-1.41L12 9.17 8.41 5.58 7 7l4.59 4.59L7 16.17l1.41 1.41L12 13.83l3.59 3.58L17 16.17l-4.59-4.59L17 7z"/>
+          </svg>
+          <span class="nav-text">Logout</span>
+        </a>
+      </li>
+    </ul>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-footer">
+      <span class="version">v1.0.0</span>
+      <span>© 2025 Smar Bee House</span>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <header class="header">
+      <h1>
+        <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+        Dashboard
+      </h1>
+      <div class="user-menu">
+        <button class="user-btn" data-bs-toggle="dropdown">
+          <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2a10 10 0 00-10 10 10 10 0 0020 0A10 10 0 0012 2zm0 4a4 4 0 110 8 4 4 0 010-8zm0 12a6 6 0 00-6 6h12a6 6 0 00-6-6z"/>
+          </svg>
+          Fermier
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#">Profile</a></li>
+          <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
+        </ul>
+      </div>
+    </header>
+
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
+      <!-- Filters -->
+      <div class="card filters">
+        <h2>Filtres</h2>
+        <form [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+          <div class="filter-row">
+            <div>
+              <label for="productionThreshold">Seuil (kg)</label>
+              <input type="number" class="glow-input" id="productionThreshold" formControlName="productionThreshold">
+            </div>
+            <div>
+              <label for="period">Période</label>
+              <select class="glow-input" id="period" formControlName="period">
+                <option *ngFor="let period of periods" [value]="period">{{ period }}</option>
+              </select>
+            </div>
+            <div>
+              <label for="siteFilter">Site</label>
+              <select class="glow-input" id="siteFilter" formControlName="site">
+                <option *ngFor="let site of sites" [value]="site">{{ site }}</option>
+              </select>
+            </div>
+            <div>
+              <label for="hiveFilter">Ruche</label>
+              <select class="glow-input" id="hiveFilter" formControlName="hive">
+                <option *ngFor="let hive of hives" [value]="hive">{{ hive }}</option>
+              </select>
+            </div>
+            <button type="submit" class="btn-apply">Apply</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Map -->
+      <div class="card map">
+        <h2>Carte des sites</h2>
+        <div id="map" class="map-container"></div>
+      </div>
+
+      <!-- Chart -->
+      <div class="card chart">
+        <h2>Production</h2>
+        <canvas id="productionChart"></canvas>
+      </div>
+
+      <!-- Sites -->
+      <div class="card sites">
+        <div class="sites-header">
+          <h2>Sites</h2>
+          <span class="badge">{{ filteredSites.length }} sites</span>
+        </div>
+        <div class="sites-list">
+          <div *ngFor="let site of filteredSites" class="site-card">
+            <div class="site-info">
+              <h3>{{ site.name }}</h3>
+              <span class="production">Total: {{ site.totalProduction }} kg</span>
+              <p>
+                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7zm0 9a2 2 0 110-4 2 2 0 010 4z"/>
+                </svg>
+                {{ site.coordinates }}
+              </p>
+            </div>
+            <div class="site-actions">
+              <button class="btn-edit" (click)="editSite(site)">Edit</button>
+              <button class="btn-delete" (click)="deleteSite(site)">Delete</button>
+            </div>
+            <div class="hives">
+              <h4>Ruches ({{ site.hives.length }}/{{ site.totalHives }})</h4>
+              <div *ngFor="let hive of site.hives" class="hive-card" [ngClass]="{'hive-needs-action': hive.needsAction}">
+                <div class="hive-details">
+                  <span class="hive-id">{{ hive.id }}</span>
+                  <span>{{ hive.production }} kg</span>
+                  <span class="date">Mesure: {{ hive.lastMeasurement }}</span>
+                </div>
+                <div class="hive-actions">
+                  <span *ngIf="hive.alerts.collecte" class="badge collecte">Collecte</span>
+                  <span *ngIf="hive.alerts.extension" class="badge extension">Extension</span>
+                  <button class="btn-details" (click)="openHiveModal(hive)">Détails</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <app-edit-site-modal
+        *ngIf="selectedSite"
+        [site]="selectedSite"
+        (save)="onSaveSite($event)"
+        (close)="onCloseModal()"
+      ></app-edit-site-modal>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>© 2025 Smar Bee House</p>
+    </footer>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal fade" id="hiveDetailsModal" tabindex="-1" aria-labelledby="hiveDetailsModalLabel">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="hiveDetailsModalLabel">Ruche {{ selectedHive?.id }}</h2>
+          <button class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.3 5.71a1 1 0 00-1.42 0L12 10.59 7.12 5.71a1 1 0 00-1.42 1.42L10.59 12l-4.88 4.88a1 1 0 001.42 1.42L12 13.41l4.88 4.88a1 1 0 001.42-1.42L13.41 12l4.88-4.88a1 1 0 000-1.41z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="selectedHive" class="modal-grid">
+            <section>
+              <h3>Infos</h3>
+              <ul>
+                <li><span>Site:</span> {{ selectedHive.site }}</li>
+                <li><span>Type:</span> {{ selectedHive.type }}</li>
+                <li><span>Reine:</span> {{ selectedHive.queenMarked }}</li>
+              </ul>
+            </section>
+            <section>
+              <h3>Production</h3>
+              <ul>
+                <li><span>Actuelle:</span> {{ selectedHive.production }} kg</li>
+                <li><span>Mesure:</span> {{ selectedHive.lastMeasurement }}</li>
+                <li><span>Moyenne:</span> {{ selectedHive.avgProduction }}</li>
+              </ul>
+            </section>
+            <section>
+              <h3>Alertes</h3>
+              <div *ngIf="selectedHive.alerts.collecte" class="alert">
+                <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2a10 10 0 00-8.66 15L12 22l8.66-5A10 10 0 0012 2zm0 14h-1v-1h1v1zm0-3h-1V8h1v5z"/>
+                </svg>
+                <div><strong>Collecte imminente</strong> - 90% capacité</div>
+              </div>
+              <div *ngIf="selectedHive.alerts.extension" class="alert">
+                <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2a10 10 0 00-8.66 15L12 22l8.66-5A10 10 0 0012 2zm0 14h-1v-1h1v1zm0-3h-1V8h1v5z"/>
+                </svg>
+                <div><strong>Extension nécessaire</strong> - Essaim trop grand</div>
+              </div>
+            </section>
+            <section>
+              <h3>Interventions</h3>
+              <table class="table">
+                <thead>
+                  <tr><th>Date</th><th>Type</th><th>Technicien</th><th>Notes</th></tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let intervention of selectedHive.interventions">
+                    <td>{{ intervention.date }}</td>
+                    <td>{{ intervention.type }}</td>
+                    <td>{{ intervention.technician }}</td>
+                    <td>{{ intervention.notes }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+            <section>
+              <h3>Recommandations</h3>
+              <ul>
+                <li *ngFor="let rec of selectedHive.recommendations">
+                  <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm5.66 7.34l-6 6a1 1 0 01-1.42 0l-3-3a1 1 0 011.42-1.42L11 13.17l5.24-5.24a1 1 0 011.42 1.42z"/>
+                  </svg>
+                  {{ rec }}
+                </li>
+              </ul>
+            </section>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          <button class="btn-primary">Planifier</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,74 @@
+/* CSS Variables (referencing dashboard-fermier.component.css) */
+:root {
+  --primary-bg: #12161c;
+  --card-bg: #1a1f26;
+  --sidebar-bg: #161b22;
+  --accent-gold: #ffd700;
+  --accent-gold-dim: #cca300;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a8b0;
+  --alert-red: #ff4d4d;
+  --alert-yellow: #ffaa00;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --transition: all 0.3s ease;
+}
+
+/* Modal Styles */
+.modal-content {
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--accent-gold);
+}
+
+.modal-header {
+  background: var(--sidebar-bg);
+  border-bottom: 1px solid var(--accent-gold);
+}
+
+.modal-title {
+  color: var(--accent-gold);
+}
+
+.btn-close {
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 1rem;
+}
+
+.form-label {
+  color: var(--text-primary);
+}
+
+.glow-input {
+  background: var(--primary-bg);
+  border: 1px solid var(--text-secondary);
+  color: var(--text-primary);
+}
+
+.modal-footer {
+  background: var(--sidebar-bg);
+  border-top: 1px solid var(--accent-gold);
+}
+
+.btn-primary {
+  background: var(--accent-gold);
+  color: var(--primary-bg);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: var(--accent-gold-dim);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.btn-secondary:hover {
+  background: var(--accent-gold);
+  color: var(--primary-bg);
+}

@@ -1,0 +1,149 @@
+/* Section Adjustments for Centering and Spacing */
+section.min-vh-100 {
+  padding-top: 5rem; /* Space from top */
+  padding-bottom: 6rem; /* Space for footer */
+}
+
+/* Honeycomb Background */
+.honeycomb-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(255, 243, 163, 0.8)), url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22%3E%3Cpath fill=%22%23FFD700%22 fill-opacity=%220.6%22 d=%22M40 0C36.4 0 32.8 2.3 30.6 6.7L20.6 26.7C18.4 31.1 20.6 36.4 25 38.6L45 48.6C49.4 50.8 54.7 48.6 56.9 44.2L66.9 24.2C69.1 19.8 66.9 14.5 62.5 12.3L42.5 2.3C41.4 1.1 40.7 0 40 0zM40 40C36.4 40 32.8 42.3 30.6 46.7L20.6 66.7C18.4 71.1 20.6 76.4 25 78.6L45 88.6C49.4 90.8 54.7 88.6 56.9 84.2L66.9 64.2C69.1 59.8 66.9 54.5 62.5 52.3L42.5 42.3C41.4 41.1 40.7 40 40 40z%22/%3E%3C/svg%3E');
+  background-size: 90px;
+  animation: subtleMove 15s linear infinite;
+}
+
+/* Subtle background animation */
+@keyframes subtleMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 90px 90px; }
+}
+
+/* Sign-Up Card */
+.sign-in-card {
+  max-width: 500px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 25px;
+}
+
+/* Bee Logo */
+.bee-glow {
+  width: 90px;
+  height: 90px;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* User Type Selection */
+.d-flex.flex-column.gap-2 {
+  border-bottom: 1px solid #eee;
+}
+
+.user-type-label {
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  cursor: pointer;
+}
+
+.user-type-label:hover {
+  background-color: rgba(255, 215, 0, 0.15);
+  border-color: #ffa000;
+}
+
+.user-type-label input {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  accent-color: #ffc107;
+}
+
+.user-type-label span {
+  font-size: 16px;
+}
+
+/* Input Fields */
+.form-control-lg {
+  font-size: 18px;
+  padding: 12px 16px;
+}
+
+/* Fermier Fields */
+.fermier-fields {
+  animation: fadeIn 0.4s ease-out forwards;
+  background-color: rgba(255, 215, 0, 0.1);
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #ffa000;
+}
+
+/* Animations */
+@keyframes beeSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+  100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.bee-spin {
+  animation: beeSpin 12s linear infinite;
+}
+
+.glow-input {
+  transition: all 0.3s ease;
+}
+
+.glow-input:focus {
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+  border-color: #ffc107 !important;
+}
+
+.glow-input:hover {
+  border-color: #ffa000;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+/* Required Field Indicator */
+.required:after {
+  content: " *";
+  color: #ff4e4e;
+  font-weight: bold;
+}
+
+/* Page Footer */
+.page-footer {
+  bottom: 1rem; /* Adjusted to ensure spacing */
+}
+
+.page-footer p {
+  font-size: 0.8rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+  section.min-vh-100 {
+    padding-top: 3rem; /* Less top padding on mobile */
+    padding-bottom: 5rem; /* Ensure footer space */
+  }
+
+  .page-footer p {
+    font-size: 0.75rem;
+  }
+
+  .d-flex.flex-column.gap-2 {
+    gap: 8px;
+  }
+}

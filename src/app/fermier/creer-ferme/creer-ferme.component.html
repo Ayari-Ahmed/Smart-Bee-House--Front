@@ -1,0 +1,60 @@
+<section class="farm-container">
+  <div class="honeycomb-bg"></div>
+  <div class="form-wrapper">
+    <div class="header">
+      <div class="bee-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12,2C13.1,2 14,2.9 14,4C14,5.1 13.1,6 12,6C10.9,6 10,5.1 10,4C10,2.9 10.9,2 12,2M12,10C13.1,10 14,10.9 14,12C14,13.1 13.1,14 12,14C10.9,14 10,13.1 10,12C10,10.9 10.9,10 12,10M12,16C10.9,16 10,16.9 10,18C10,19.1 10.9,20 12,20C13.1,20 14,19.1 14,18C14,16.9 13.1,16 12,16M20,6C21.1,6 22,6.9 22,8C22,9.1 21.1,10 20,10C18.9,10 18,9.1 18,8C18,6.9 18.9,6 20,6M16,10C17.1,10 18,10.9 18,12C18,13.1 17.1,14 16,14C14.9,14 14,13.1 14,12C14,10.9 14.9,10 16,10M8,10C9.1,10 10,10.9 10,12C10,13.1 9.1,14 8,14C6.9,14 6,13.1 6,12C6,10.9 6.9,10 8,10M4,6C5.1,6 6,6.9 6,8C6,9.1 5.1,10 4,10C2.9,10 2,9.1 2,8C2,6.9 2.9,6 4,6M12,4C11.4,4 11,4.4 11,5V7C11,7.6 11.4,8 12,8C12.6,8 13,7.6 13,7V5C13,4.4 12.6,4 12,4M20,8C19.4,8 19,8.4 19,9V11C19,11.6 19.4,12 20,12C20.6,12 21,11.6 21,11V9C21,8.4 20.6,8 20,8M4,8C3.4,8 3,8.4 3,9V11C3,11.6 3.4,12 4,12C4.6,12 5,11.6 5,11V9C5,8.4 4.6,8 4,8M8,12C7.4,12 7,12.4 7,13V15C7,15.6 7.4,16 8,16C8.6,16 9,15.6 9,15V13C9,12.4 8.6,12 8,12M16,12C15.4,12 15,12.4 15,13V15C15,15.6 15.4,16 16,16C16.6,16 17,15.6 17,15V13C17,12.4 16.6,12 16,12M12,16C11.4,16 11,16.4 11,17V19C11,19.6 11.4,20 12,20C12.6,20 13,19.6 13,19V17C13,16.4 12.6,16 12,16Z"/>
+        </svg>
+      </div>
+      <h1>Créer une Ferme</h1>
+      <p class="subtitle">Ajoutez une nouvelle ferme à votre exploitation apicole</p>
+    </div>
+
+    <div class="success-message" *ngIf="showSuccessMessage" @fadeIn>
+      ✅ Ferme créée avec succès !
+    </div>
+
+    <div class="fermier-info" *ngIf="fermier">
+      <h3>👤 Fermier connecté</h3>
+      <p>{{ fermier.prenom }} {{ fermier.nom }} - {{ fermier.email }}</p>
+    </div>
+
+    <form [formGroup]="farmForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="nom" class="required">Nom de la ferme</label>
+        <input type="text" id="nom" formControlName="nom" placeholder="Ex: Ferme des Abeilles d'Or">
+        <div class="error-message" *ngIf="farmForm.get('nom')?.invalid && farmForm.get('nom')?.touched">
+          Le nom de la ferme est requis
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="superficie" class="required">Superficie</label>
+        <div class="input-group">
+          <input type="number" id="superficie" formControlName="superficie" min="0.1" step="0.1" placeholder="Ex: 2.5">
+          <span class="input-suffix">hectares</span>
+        </div>
+        <div class="error-message" *ngIf="farmForm.get('superficie')?.invalid && farmForm.get('superficie')?.touched">
+          La superficie doit être supérieure à 0
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="siteApiculture" class="required">Site d'apiculture</label>
+        <select id="siteApiculture" formControlName="siteApiculture">
+          <option value="">Sélectionnez un site...</option>
+          <option *ngFor="let site of sites" [value]="site.id">{{ site.name }}</option>
+        </select>
+        <div class="error-message" *ngIf="farmForm.get('siteApiculture')?.invalid && farmForm.get('siteApiculture')?.touched">
+          Veuillez sélectionner un site d'apiculture
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button type="button" class="btn-secondary" (click)="resetForm()">Annuler</button>
+        <button type="submit" class="btn-primary" [disabled]="farmForm.invalid">Créer la ferme</button>
+      </div>
+    </form>
+  </div>
+</section>
