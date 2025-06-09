@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { trigger, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-creer-ferme',
   templateUrl: './creer-ferme.component.html',
-  standalone: false,
+  standalone: true,
   styleUrls: ['./creer-ferme.component.css'],
   animations: [
     trigger('fadeIn', [
@@ -14,7 +16,8 @@ import { trigger, style, animate, transition } from '@angular/animations';
         animate('0.4s ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
       ])
     ])
-  ]
+  ],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule]
 })
 export class CreerFermeComponent implements OnInit {
   farmForm: FormGroup;

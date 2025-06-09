@@ -1,19 +1,35 @@
-import { Component, AfterViewInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, AfterViewInit, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
-import Chart from 'chart.js/auto'; // Correct import
+import { Chart, registerables } from 'chart.js';
+
+// Register Chart.js components
+Chart.register(...registerables);
+
+interface Activity {
+  type: 'info' | 'success' | 'warning' | 'error';
+  description: string;
+  time: Date;
+}
 
 @Component({
   selector: 'app-dashboard-fermier',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './dashboard-fermier.component.html',
-  
   styleUrls: ['./dashboard-fermier.component.css'],
 })
-export class DashboardFermierComponent implements AfterViewInit {
+export class DashboardFermierComponent implements AfterViewInit, OnInit {
+  @ViewChild('productionChart') productionChartRef!: ElementRef;
+  @ViewChild('hiveStatusChart') hiveStatusChartRef!: ElementRef;
+
+  private productionChart: Chart | null = null;
+  private hiveStatusChart: Chart | null = null;
+
   filterForm: FormGroup;
-  sidebarCollapsed = true;
   periods = ['Ce mois', 'Cette saison', 'Cette année', 'Personnalisée'];
   sites = ['Tous les sites', 'Verger Pommier', 'Champ Lavande', 'Forêt Acacia'];
   hives = ['Toutes les ruches', 'R-001', 'R-002', 'R-003', 'R-101', 'R-102'];
@@ -66,6 +82,39 @@ export class DashboardFermierComponent implements AfterViewInit {
   selectedSite: any = null;
   private map: L.Map | undefined;
 
+  // Dashboard metrics
+  totalHives = 25;
+  hiveChange = 8;
+  activeSites = 3;
+  siteChange = 0;
+  totalProduction = 289;
+  productionChange = 12;
+  activeAlerts = 4;
+  alertChange = -2;
+
+  recentActivities = [
+    {
+      type: 'inspection',
+      description: 'Inspection de routine - Ruche R-001',
+      time: new Date('2024-03-15T10:30:00')
+    },
+    {
+      type: 'production',
+      description: 'Collecte de miel - Site Verger Pommier',
+      time: new Date('2024-03-14T15:45:00')
+    },
+    {
+      type: 'alert',
+      description: 'Alerte - Ruche R-102 nécessite une intervention',
+      time: new Date('2024-03-14T09:15:00')
+    },
+    {
+      type: 'maintenance',
+      description: 'Ajout de hausse - Ruche R-003',
+      time: new Date('2024-03-13T14:20:00')
+    }
+  ];
+
   constructor(private fb: FormBuilder, private router: Router) {
     this.filterForm = this.fb.group({
       productionThreshold: [20],
@@ -76,11 +125,24 @@ export class DashboardFermierComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.initMap();
-    this.initChart();
+    // Initialize map after a small delay to ensure DOM is ready
+    setTimeout(() => {
+      this.initMap();
+      this.initCharts();
+    }, 100);
+  }
+
+  ngOnInit() {
+    this.loadDashboardData();
   }
 
   initMap() {
+    const mapContainer = document.getElementById('map');
+    if (!mapContainer) {
+      console.warn('Map container not found, skipping map initialization');
+      return;
+    }
+
     this.map = L.map('map').setView([45.1234, 4.5678], 10);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
@@ -94,27 +156,107 @@ export class DashboardFermierComponent implements AfterViewInit {
     });
   }
 
-  initChart() {
-    const ctx = document.getElementById('productionChart') as HTMLCanvasElement;
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-        datasets: [{
-          label: 'Production (kg)',
-          data: [50, 60, 80, 90, 110, 124],
-          borderColor: '#ffc107',
-          backgroundColor: 'rgba(255, 193, 7, 0.2)',
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: { beginAtZero: true }
+  private initCharts() {
+    if (this.productionChartRef && this.productionChartRef.nativeElement) {
+      const ctx = this.productionChartRef.nativeElement.getContext('2d');
+      if (ctx) {
+        // Destroy existing chart if it exists
+        if (this.productionChart) {
+          this.productionChart.destroy();
         }
+
+        this.productionChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'],
+            datasets: [{
+              label: 'Production (kg)',
+              data: [12, 19, 15, 25, 32, 45, 42, 38, 35, 28, 22, 18],
+              borderColor: '#FFB800',
+              backgroundColor: 'rgba(255, 184, 0, 0.1)',
+              tension: 0.4,
+              fill: true
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                  color: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: 'rgba(0, 0, 0, 0.1)'
+                },
+                ticks: {
+                  color: 'rgba(0, 0, 0, 0.5)'
+                }
+              },
+              x: {
+                grid: {
+                  color: 'rgba(255, 174, 0, 0.1)'
+                },
+                ticks: {
+                  color: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            }
+          }
+        });
       }
-    });
+    }
+
+    if (this.hiveStatusChartRef && this.hiveStatusChartRef.nativeElement) {
+      const ctx = this.hiveStatusChartRef.nativeElement.getContext('2d');
+      if (ctx) {
+        // Destroy existing chart if it exists
+        if (this.hiveStatusChart) {
+          this.hiveStatusChart.destroy();
+        }
+
+        this.hiveStatusChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: ['En Bon État', 'Attention Requise', 'Alertes'],
+            datasets: [{
+              data: [65, 25, 10],
+              backgroundColor: [
+                '#10B981',  // Green for healthy
+                '#F59E0B',  // Orange for needs attention
+                '#EF4444'   // Red for alerts
+              ],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                  color: 'rgba(0, 0, 0, 0.5)',
+                  padding: 20,
+                  font: {
+                    size: 12
+                  }
+                }
+              }
+            },
+            cutout: '70%'
+          }
+        });
+      }
+    }
   }
 
   applyFilters() {
@@ -131,10 +273,6 @@ export class DashboardFermierComponent implements AfterViewInit {
     this.selectedHive = hive;
     const modal = new (window as any).bootstrap.Modal(document.getElementById('hiveDetailsModal'));
     modal.show();
-  }
-
-  toggleSidebar() {
-    this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 
   logout() {
@@ -156,5 +294,30 @@ export class DashboardFermierComponent implements AfterViewInit {
 
   onCloseModal() {
     this.selectedSite = null;
+  }
+
+  loadDashboardData() {
+    // Load dashboard data from your service
+    // This is where you would typically make API calls
+  }
+
+  refreshData() {
+    this.loadDashboardData();
+    // TODO: Add refresh animation or notification
+  }
+
+  getActivityIcon(type: string): string {
+    switch (type) {
+      case 'inspection':
+        return 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z';
+      case 'production':
+        return 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z';
+      case 'alert':
+        return 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z';
+      case 'maintenance':
+        return 'M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z';
+      default:
+        return '';
+    }
   }
 }

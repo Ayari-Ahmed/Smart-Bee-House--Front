@@ -1,24 +1,46 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {SignInComponent} from '../sign-in/sign-in.component';
-import {CreerFermeComponent} from './creer-ferme/creer-ferme.component';
-import {DashboardFermierComponent} from './dashboard-fermier/dashboard-fermier.component';
-
-import { MesRuchesComponent } from './mes-ruches/mes-ruches.component';
-import { MesSitesComponent } from './mes-sites/mes-sites.component';
-import { ListeFermesComponent } from './liste-fermes/liste-fermes.component';
-import { ProductionCollecteComponent } from './production-collecte/production-collecte.component';
-import { DecisionsStrategiesComponent } from './decisions-strategies/decisions-strategies.component';
+import { FermierLayoutComponent } from './fermier-layout/fermier-layout.component';
 
 const routes: Routes = [
-  {path: '', component: DashboardFermierComponent},
-  {path: 'dashboard', component: DashboardFermierComponent},
-  {path : "creer",component :CreerFermeComponent },
-  {path : "list",component : ListeFermesComponent},
-  {path : "ruches",component :MesRuchesComponent },
-  {path : "sites",component :MesSitesComponent },
-  {path : "productionCol",component :ProductionCollecteComponent },
-  {path : "desicion",component :DecisionsStrategiesComponent },
+  {
+    path: '',
+    component: FermierLayoutComponent,
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./dashboard-fermier/dashboard-fermier.component').then(m => m.DashboardFermierComponent)
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./dashboard-fermier/dashboard-fermier.component').then(m => m.DashboardFermierComponent)
+      },
+      {
+        path: 'creer',
+        loadComponent: () => import('./creer-ferme/creer-ferme.component').then(m => m.CreerFermeComponent)
+      },
+      {
+        path: 'list',
+        loadComponent: () => import('./liste-fermes/liste-fermes.component').then(m => m.ListeFermesComponent)
+      },
+      {
+        path: 'ruches',
+        loadComponent: () => import('./mes-ruches/mes-ruches.component').then(m => m.MesRuchesComponent)
+      },
+      {
+        path: 'sites',
+        loadComponent: () => import('./mes-sites/mes-sites.component').then(m => m.MesSitesComponent)
+      },
+      {
+        path: 'productionCol',
+        loadComponent: () => import('./production-collecte/production-collecte.component').then(m => m.ProductionCollecteComponent)
+      },
+      {
+        path: 'desicion',
+        loadComponent: () => import('./decisions-strategies/decisions-strategies.component').then(m => m.DecisionsStrategiesComponent)
+      }
+    ]
+  }
 ];
 
 @NgModule({

@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import * as L from 'leaflet';
 
 @Component({
   selector: 'app-mes-sites',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './mes-sites.component.html',
   styleUrls: ['./mes-sites.component.css']
 })
