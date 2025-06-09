@@ -73,7 +73,7 @@
         <div class="summary-card">
           <div class="card-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 15l-5-5h3V9h4v4h3l-5 5z"/>
+              <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 15.5h-1.5V14h1.5v4.5zm0-6h-1.5V8h1.5v4.5zm6 6H16V14h1.5v4.5zm0-6H16V8h1.5v4.5z"/>
             </svg>
           </div>
           <div class="card-content">
@@ -198,67 +198,163 @@
         </div>
 
         <!-- New Harvest Form -->
-        <div class="harvest-form" *ngIf="newHarvestMode">
+        <div class="new-harvest-form glass-effect" *ngIf="newHarvestMode">
           <div class="form-header">
-            <h4>Nouvelle récolte</h4>
+            <div class="header-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 15l-5-5h3V9h4v4h3l-5 5z"/>
+              </svg>
+            </div>
+            <div class="header-text">
+              <h3>Nouvelle récolte</h3>
+              <p class="subtitle">Enregistrez une nouvelle récolte de miel</p>
+            </div>
           </div>
 
           <div class="form-content">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="harvestDate">Date</label>
-                <input type="text" id="harvestDate" class="glow-input" [(ngModel)]="newHarvest.date" placeholder="JJ/MM/AAAA">
-              </div>
-              <div class="form-group">
-                <label for="harvestSite">Site</label>
-                <select id="harvestSite" class="glow-input" [(ngModel)]="newHarvest.site">
-                  <option *ngFor="let site of sites.slice(1)" [value]="site">{{ site }}</option>
-                </select>
-              </div>
-            </div>
+            <div class="form-grid">
+              <!-- Left Column -->
+              <div class="form-left-column">
+                <div class="form-group">
+                  <label class="form-label">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    Site
+                  </label>
+                  <select [(ngModel)]="newHarvest.site" class="form-control glow-input">
+                    <option value="Verger Pommier">Verger Pommier</option>
+                    <option value="Champ Lavande">Champ Lavande</option>
+                    <option value="Forêt Acacia">Forêt Acacia</option>
+                  </select>
+                </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label for="harvestType">Type de miel</label>
-                <select id="harvestType" class="glow-input" [(ngModel)]="newHarvest.type">
-                  <option *ngFor="let type of honeyTypes" [value]="type">{{ type }}</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="harvestQuality">Qualité</label>
-                <select id="harvestQuality" class="glow-input" [(ngModel)]="newHarvest.quality">
-                  <option value="Premium">Premium</option>
-                  <option value="Standard">Standard</option>
-                  <option value="Économique">Économique</option>
-                </select>
-              </div>
-            </div>
+                <div class="form-group">
+                  <label class="form-label">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 15l-5-5h3V9h4v4h3l-5 5z"/>
+                    </svg>
+                    Type de miel
+                  </label>
+                  <select [(ngModel)]="newHarvest.type" class="form-control glow-input">
+                    <option value="Toutes fleurs">Toutes fleurs</option>
+                    <option value="Acacia">Acacia</option>
+                    <option value="Lavande">Lavande</option>
+                    <option value="Châtaignier">Châtaignier</option>
+                    <option value="Tilleul">Tilleul</option>
+                    <option value="Tournesol">Tournesol</option>
+                  </select>
+                </div>
 
-            <div class="form-group">
-              <label for="harvestQuantity">Quantité (kg)</label>
-              <input type="number" id="harvestQuantity" class="glow-input" [(ngModel)]="newHarvest.quantity" min="0" step="0.5">
-            </div>
+                <div class="form-group">
+                  <label class="form-label">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 15.5h-1.5V14h1.5v4.5zm0-6h-1.5V8h1.5v4.5zm6 6H16V14h1.5v4.5zm0-6H16V8h1.5v4.5z"/>
+                    </svg>
+                    Quantité (kg)
+                  </label>
+                  <input type="number" [(ngModel)]="newHarvest.quantity" class="form-control glow-input" min="0" step="0.1">
+                </div>
 
-            <div class="form-group">
-              <label>Ruches sélectionnées</label>
-              <div class="ruche-selection">
-                <div *ngFor="let ruche of getAvailableRuchesBySelectedSite()" 
-                     class="ruche-option" 
-                     [class.selected]="isRucheSelected(ruche)"
-                     (click)="toggleRucheSelection(ruche)">
-                  {{ ruche }}
+                <div class="form-group">
+                  <label class="form-label">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                    </svg>
+                    Qualité
+                  </label>
+                  <select [(ngModel)]="newHarvest.quality" class="form-control glow-input">
+                    <option value="Premium">Premium</option>
+                    <option value="Standard">Standard</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div class="form-right-column">
+                <div class="form-group ruche-selection-group">
+                  <label class="form-label">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                    </svg>
+                    Ruches sélectionnées
+                    <span class="selection-count" *ngIf="newHarvest.ruches.length > 0">
+                      ({{newHarvest.ruches.length}} sélectionnées)
+                    </span>
+                  </label>
+                  <div class="ruche-selection">
+                    <div *ngFor="let ruche of getAvailableRuchesBySelectedSite()" 
+                         class="ruche-card" 
+                         [class.selected]="isNewHarvestRucheSelected(ruche)"
+                         (click)="toggleNewHarvestRuche(ruche)">
+                      <div class="ruche-info">
+                        <div class="ruche-header">
+                          <h5>{{ruche.name}}</h5>
+                          <span class="status-badge" [class.ready]="ruche.status === 'ready'">
+                            {{ruche.status === 'ready' ? 'Prête' : 'Non disponible'}}
+                          </span>
+                        </div>
+                        <div class="ruche-details">
+                          <div class="detail-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 15.5h-1.5V14h1.5v4.5zm0-6h-1.5V8h1.5v4.5zm6 6H16V14h1.5v4.5zm0-6H16V8h1.5v4.5z"/>
+                            </svg>
+                            <span>Production estimée: {{ruche.estimatedProduction}} kg</span>
+                          </div>
+                          <div class="detail-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 15l-5-5h3V9h4v4h3l-5 5z"/>
+                            </svg>
+                            <span>Dernière récolte: {{ruche.lastHarvest | date:'dd/MM/yyyy'}}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="selection-indicator">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                    </svg>
+                    Notes
+                  </label>
+                  <textarea [(ngModel)]="newHarvest.notes" class="form-control glow-input" rows="3" 
+                            placeholder="Ajoutez des notes sur cette récolte..."></textarea>
                 </div>
               </div>
             </div>
 
-            <div class="form-group">
-              <label for="harvestNotes">Notes</label>
-              <textarea id="harvestNotes" class="glow-input" [(ngModel)]="newHarvest.notes" rows="3"></textarea>
+            <div class="form-summary" *ngIf="newHarvest.ruches.length > 0">
+              <div class="summary-item">
+                <span class="label">Production totale estimée:</span>
+                <span class="value">{{ calculateEstimatedProduction() }} kg</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">Nombre de ruches:</span>
+                <span class="value">{{ newHarvest.ruches.length }}</span>
+              </div>
             </div>
 
             <div class="form-actions">
-              <button type="button" class="btn-cancel" (click)="cancelNewHarvest()">Annuler</button>
-              <button type="button" class="btn-save" (click)="saveNewHarvest()">Enregistrer</button>
+              <button class="btn btn-secondary" (click)="cancelNewHarvest()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+                Annuler
+              </button>
+              <button class="btn btn-secondary" (click)="saveNewHarvest()" style="background-color: #ffb730; color: black;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+                Enregistrer
+              </button>
             </div>
           </div>
         </div>
@@ -309,6 +405,272 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Planning Modal -->
+<div class="planning-modal" *ngIf="showPlanningModal" [class.modal-visible]="showPlanningModal">
+  <div class="modal-overlay" (click)="closePlanningModal()"></div>
+  <div class="modal-content">
+    <!-- Modal Header with Gradient Background -->
+    <div class="modal-header">
+      <div class="header-content">
+        <div class="header-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/>
+          </svg>
+        </div>
+        <div class="header-text">
+          <h3>Planifier une récolte</h3>
+          <p class="subtitle">Sélectionnez une date, un site et les ruches pour planifier votre prochaine récolte</p>
+        </div>
+      </div>
+      <button class="close-btn" (click)="closePlanningModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="planning-grid">
+        <!-- Left Column - Calendar & Summary -->
+        <div class="planning-left-column">
+          <!-- Calendar Section with Glass Effect -->
+          <div class="calendar-section glass-effect">
+            <div class="section-header">
+              <div class="header-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/>
+                </svg>
+              </div>
+              <div class="header-text">
+                <h4>Calendrier</h4>
+                <p class="section-subtitle">Sélectionnez une date disponible pour la récolte</p>
+              </div>
+            </div>
+
+            <div class="calendar-content">
+              <div class="calendar-header">
+                <button class="nav-btn" (click)="previousMonth()">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                  </svg>
+                </button>
+                <h4 class="month-title">{{ currentMonth | date:'MMMM yyyy':'fr-FR' }}</h4>
+                <button class="nav-btn" (click)="nextMonth()">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="calendar-grid">
+                <div class="weekdays">
+                  <div *ngFor="let day of weekDays" class="weekday">{{ day }}</div>
+                </div>
+                <div class="days">
+                  <div *ngFor="let day of calendarDays" 
+                       class="day" 
+                       [class.other-month]="!day.isCurrentMonth"
+                       [class.available]="day.isAvailable"
+                       [class.selected]="selectedDate && day.date.toDateString() === selectedDate.toDateString()"
+                       (click)="selectDate(day)">
+                    <span class="day-number">{{ day.number }}</span>
+                    <div *ngIf="day.isAvailable" class="availability-indicator"></div>
+                    <div *ngIf="day.isCurrentMonth && day.isAvailable" class="day-hover-effect"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Planning Summary with Gradient Cards -->
+          <div class="planning-summary" *ngIf="selectedDate || selectedSite || selectedRuches.length > 0">
+            <div class="section-header">
+              <div class="header-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 15.5h-1.5V14h1.5v4.5zm0-6h-1.5V8h1.5v4.5zm6 6H16V14h1.5v4.5zm0-6H16V8h1.5v4.5z"/>
+                </svg>
+              </div>
+              <div class="header-text">
+                <h4>Résumé de la planification</h4>
+                <p class="section-subtitle">Vérifiez les détails de votre planification</p>
+              </div>
+            </div>
+
+            <div class="summary-content">
+              <div class="summary-item gradient-card" *ngIf="selectedDate">
+                <div class="summary-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/>
+                  </svg>
+                </div>
+                <div class="summary-info">
+                  <span class="label">Date sélectionnée</span>
+                  <span class="value">{{ selectedDate | date:'EEEE d MMMM yyyy':'fr-FR' }}</span>
+                </div>
+              </div>
+
+              <div class="summary-item gradient-card" *ngIf="selectedSite">
+                <div class="summary-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                </div>
+                <div class="summary-info">
+                  <span class="label">Site sélectionné</span>
+                  <span class="value">{{ selectedSite.name }}</span>
+                </div>
+              </div>
+
+              <div class="summary-item gradient-card" *ngIf="selectedRuches.length > 0">
+                <div class="summary-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                  </svg>
+                </div>
+                <div class="summary-info">
+                  <span class="label">Ruches sélectionnées</span>
+                  <span class="value">{{ selectedRuches.length }} ruches</span>
+                </div>
+              </div>
+
+              <div class="summary-item highlight-card" *ngIf="selectedRuches.length > 0">
+                <div class="summary-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 15.5h-1.5V14h1.5v4.5zm0-6h-1.5V8h1.5v4.5zm6 6H16V14h1.5v4.5zm0-6H16V8h1.5v4.5z"/>
+                  </svg>
+                </div>
+                <div class="summary-info">
+                  <span class="label">Production estimée</span>
+                  <span class="value highlight">{{ calculateEstimatedProduction() }} kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Site & Ruche Selection -->
+        <div class="planning-right-column">
+          <!-- Site Selection Section with Cards -->
+          <div class="site-selection glass-effect">
+            <div class="section-header">
+              <div class="header-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+              </div>
+              <div class="header-text">
+                <h4>Sélection du site</h4>
+                <p class="section-subtitle">Choisissez un site disponible pour la récolte</p>
+              </div>
+            </div>
+
+            <div class="sites-grid">
+              <div *ngFor="let site of sitesData" 
+                   class="site-card" 
+                   [class.selected]="selectedSite?.id === site.id"
+                   (click)="selectSite(site)">
+                <div class="site-info">
+                  <div class="site-header">
+                    <h5>{{ site.name }}</h5>
+                    <span class="status-badge" [class.available]="site.status === 'available'">
+                      {{ site.status === 'available' ? 'Disponible' : 'Occupé' }}
+                    </span>
+                  </div>
+                  <p class="site-location">{{ site.location }}</p>
+                  <div class="site-stats">
+                    <div class="stat-item">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                      </svg>
+                      <span>{{ site.ruches }} ruches</span>
+                    </div>
+                    <div class="stat-item">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 15l-5-5h3V9h4v4h3l-5 5z"/>
+                      </svg>
+                      <span>Dernière récolte: {{ site.lastHarvest | date:'dd/MM/yyyy':'fr-FR' }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-hover-effect"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ruche Selection Section with Interactive Cards -->
+          <div class="ruche-selection glass-effect" *ngIf="selectedSite">
+            <div class="section-header">
+              <div class="header-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                </svg>
+              </div>
+              <div class="header-text">
+                <h4>Sélection des ruches</h4>
+                <p class="section-subtitle">Sélectionnez les ruches à récolter</p>
+              </div>
+            </div>
+
+            <div class="ruches-grid">
+              <div *ngFor="let ruche of getFilteredRuches()" 
+                   class="ruche-card"
+                   [class.selected]="isRucheSelected(ruche)"
+                   (click)="toggleRucheSelection(ruche)">
+                <div class="ruche-info">
+                  <div class="ruche-header">
+                    <h5>{{ ruche.name }}</h5>
+                    <span class="status-badge" [class.ready]="ruche.status === 'ready'">
+                      {{ ruche.status === 'ready' ? 'Prête' : 'Non disponible' }}
+                    </span>
+                  </div>
+                  <div class="ruche-stats">
+                    <div class="stat-item">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 15.5h-1.5V14h1.5v4.5zm0-6h-1.5V8h1.5v4.5zm6 6H16V14h1.5v4.5zm0-6H16V8h1.5v4.5z"/>
+                      </svg>
+                      <span>Estimation: {{ ruche.estimatedProduction }} kg</span>
+                    </div>
+                    <div class="stat-item">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm0 15l-5-5h3V9h4v4h3l-5 5z"/>
+                      </svg>
+                      <span>Dernière récolte: {{ ruche.lastHarvest | date:'dd/MM/yyyy':'fr-FR' }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-hover-effect"></div>
+                <div class="selection-indicator">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer with Gradient Background -->
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="closePlanningModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+        Annuler
+      </button>
+      <button class="btn-confirm" style="background-color: #ffb730; color: black;" 
+              [disabled]="!canSavePlanning()"
+              (click)="confirmPlanning()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+        </svg>
+        Confirmer la planification
+      </button>
     </div>
   </div>
 </div>

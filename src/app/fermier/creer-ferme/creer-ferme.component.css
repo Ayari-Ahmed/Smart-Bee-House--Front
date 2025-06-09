@@ -38,15 +38,16 @@ body {
   z-index: 0;
   animation: float 15s ease-in-out infinite;
   margin-left: 260px;
+  
 }
 .farm-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgb(250, 238, 183);
+  background: rgb(215, 216, 207);
   
   width: 600px;
-  max-width: 95%;
+  max-width: 95%; 
   margin: 5vh auto;
   padding: 2rem;
   border-radius: var(--border-radius);
