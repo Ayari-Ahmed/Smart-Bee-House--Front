@@ -9,6 +9,7 @@ import { DashboardFermierComponent } from './dashboard-fermier/dashboard-fermier
 import { FermierHeaderComponent } from './fermier-header/fermier-header.component';
 import { EditSiteModalComponent } from './edit-site-modal/edit-site-modal.component';
 import { MesRuchesComponent } from './mes-ruches/mes-ruches.component';
+import { DecisionsStrategiesComponent } from './decisions-strategies/decisions-strategies.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { MesRuchesComponent } from './mes-ruches/mes-ruches.component';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    FermierRoutingModule
+    FermierRoutingModule,
+    DecisionsStrategiesComponent
   ]
 })
 export class FermierModule { }

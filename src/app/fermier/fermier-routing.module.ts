@@ -8,6 +8,7 @@ import { MesRuchesComponent } from './mes-ruches/mes-ruches.component';
 import { MesSitesComponent } from './mes-sites/mes-sites.component';
 import { ListeFermesComponent } from './liste-fermes/liste-fermes.component';
 import { ProductionCollecteComponent } from './production-collecte/production-collecte.component';
+import { DecisionsStrategiesComponent } from './decisions-strategies/decisions-strategies.component';
 
 const routes: Routes = [
   {path: '', component: DashboardFermierComponent},
@@ -17,6 +18,7 @@ const routes: Routes = [
   {path : "ruches",component :MesRuchesComponent },
   {path : "sites",component :MesSitesComponent },
   {path : "productionCol",component :ProductionCollecteComponent },
+  {path : "desicion",component :DecisionsStrategiesComponent },
 ];
 
 @NgModule({

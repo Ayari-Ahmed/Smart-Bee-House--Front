@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 import Chart from 'chart.js/auto';
 
 @Component({
   selector: 'app-production-collecte',
   templateUrl: './production-collecte.component.html',
-  styleUrls: ['./production-collecte.component.css']
+  styleUrls: ['./production-collecte.component.css'],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  standalone: true
 })
 export class ProductionCollecteComponent implements OnInit {
   filterForm: FormGroup;
@@ -147,7 +150,7 @@ export class ProductionCollecteComponent implements OnInit {
     id: '',
     date: new Date().toLocaleDateString('fr-FR'),
     site: 'Verger Pommier',
-    ruches: [],
+    ruches: [] as string[],
     type: 'Toutes fleurs',
     quantity: 0,
     quality: 'Standard',

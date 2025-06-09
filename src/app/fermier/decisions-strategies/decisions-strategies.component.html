@@ -1,0 +1,377 @@
+<div class="strategies-container">
+  <!-- Header -->
+  <div class="header">
+    <h2>Décisions Stratégiques</h2>
+    <div class="header-actions">
+      <button class="btn-refresh" (click)="applyFilters()" aria-label="Actualiser les filtres">
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 12h7V5l-2.35 1.35z"/>
+        </svg>
+        Actualiser
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Panel -->
+  <div class="filter-panel">
+    <form [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+      <div class="filter-group">
+        <label for="recommendationType">Type de recommandation</label>
+        <select id="recommendationType" class="glow-input" formControlName="recommendationType">
+          <option value="all">Toutes les recommandations</option>
+          <option value="closure">Fermetures de sites</option>
+          <option value="relocation">Déplacements de ruches</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="sortBy">Trier par</label>
+        <select id="sortBy" class="glow-input" formControlName="sortBy">
+          <option *ngFor="let option of sortOptions" [value]="option">{{ option }}</option>
+        </select>
+      </div>
+      <div class="filter-group range-group">
+        <label for="minProductivity">Productivité minimale: {{ filterForm.get('minProductivity')?.value }}%</label>
+        <input type="range" class="range-input" formControlName="minProductivity" min="0" max="100" step="5">
+      </div>
+      <button type="submit" class="btn-apply">Appliquer</button>
+    </form>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-container">
+    <div class="tabs-header">
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'sites'" 
+        (click)="switchTab('sites')"
+        aria-label="Afficher les sites à fermer"
+      >
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
+        </svg>
+        Sites à fermer
+        <span class="badge">{{ closureSitesCount }}</span>
+      </button>
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'hives'"
+        (click)="switchTab('hives')"
+        aria-label="Afficher les ruches à déplacer"
+      >
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16h-9v-6h9v6zm-10 0H3V5h8v14zm10-8H12V5h9v6z"/>
+        </svg>
+        Ruches à déplacer
+        <span class="badge">{{ relocationHivesCount }}</span>
+      </button>
+    </div>
+
+    <!-- Sites Tab Content -->
+    <div class="tab-content" *ngIf="activeTab === 'sites'">
+      <div class="recommendations-grid">
+        <div *ngFor="let site of filteredSites" class="recommendation-card" 
+          [class.recommended]="site.recommendation === 'closure'">
+          
+          <div class="card-header">
+            <h3 class="card-title">{{ site.name }}</h3>
+            <span *ngIf="site.score != null" class="score" 
+                  [class.high]="site.score > 70" 
+                  [class.medium]="site.score > 40 && site.score <= 70" 
+                  [class.low]="site.score <= 40">
+              Score: {{ site.score }}%
+            </span>
+          </div>
+          
+          <div class="card-body">
+            <div class="card-stats">
+              <div class="stat-item">
+                <div class="stat-label">Production</div>
+                <div class="stat-value">{{ site.production }} kg</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Efficacité</div>
+                <div class="stat-value">{{ site.efficiency }}%</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Ruches</div>
+                <div class="stat-value">{{ site.hives.length }}</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Dernière activité</div>
+                <div class="stat-value">{{ site.lastActivity }}</div>
+              </div>
+            </div>
+            
+            <div *ngIf="site.recommendation" class="recommendation-section">
+              <div class="recommendation-label">
+                <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                </svg>
+                {{ site.recommendation === 'closure' ? 'Fermeture recommandée' : 'Surveillance recommandée' }}
+              </div>
+              <p class="recommendation-reason">{{ site.reason }}</p>
+            </div>
+          </div>
+          
+          <div class="card-footer">
+            <button class="btn-details" (click)="openSiteDetails(site)" aria-label="Voir les détails du site">
+              Détails
+            </button>
+            <ng-container *ngIf="site.recommendation === 'closure'">
+              <button class="btn-apply-rec" (click)="applyRecommendation('site-closure', site.id)" aria-label="Appliquer la recommandation de fermeture">
+                Appliquer
+              </button>
+              <button class="btn-dismiss-rec" (click)="dismissRecommendation('site-closure', site.id)" aria-label="Ignorer la recommandation de fermeture">
+                Ignorer
+              </button>
+            </ng-container>
+          </div>
+        </div>
+        
+        <div *ngIf="filteredSites.length === 0" class="empty-state">
+          <svg class="empty-icon" width="48" height="48" viewBox="0 0 24 24" fill="currentColor" opacity="0.3">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/>
+          </svg>
+          <h3>Aucun site trouvé</h3>
+          <p>Aucun site ne correspond à vos critères de filtrage.</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Hives Tab Content -->
+    <div class="tab-content" *ngIf="activeTab === 'hives'">
+      <div class="recommendations-grid">
+        <div *ngFor="let hive of filteredHives" class="recommendation-card"
+          [class.recommended]="hive.needsRelocation">
+          
+          <div class="card-header">
+            <h3 class="card-title">Ruche {{ hive.id }}</h3>
+            <span class="site-name">Site: {{ getSiteName(hive.siteId) }}</span>
+          </div>
+          
+          <div class="card-body">
+            <div class="card-stats">
+              <div class="stat-item">
+                <div class="stat-label">Production</div>
+                <div class="stat-value">{{ hive.production }} kg</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Efficacité</div>
+                <div class="stat-value">{{ hive.efficiency }}%</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Dernière activité</div>
+                <div class="stat-value">{{ hive.lastActivity }}</div>
+              </div>
+            </div>
+            
+            <div class="alerts" *ngIf="hive.alerts.length">
+              <span class="alert-badge" *ngFor="let alert of hive.alerts">{{ alert }}</span>
+            </div>
+            
+            <div *ngIf="hive.needsRelocation" class="recommendation-section">
+              <div class="recommendation-label">
+                <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 9h-2v6.59L5.41 4 4 5.41 15.59 17H9v2h10V9z"/>
+                </svg>
+                Déplacement recommandé vers {{ getSiteName(hive.recommendedSiteId || '') }}
+              </div>
+              <p class="recommendation-reason">{{ hive.reason }}</p>
+            </div>
+          </div>
+          
+          <div class="card-footer">
+            <button class="btn-details" (click)="openHiveDetails(hive)" aria-label="Voir les détails de la ruche">
+              Détails
+            </button>
+            <ng-container *ngIf="hive.needsRelocation">
+              <button class="btn-apply-rec" (click)="applyRecommendation('hive-relocation', hive.id)" aria-label="Appliquer la recommandation de déplacement">
+                Appliquer
+              </button>
+              <button class="btn-dismiss-rec" (click)="dismissRecommendation('hive-relocation', hive.id)" aria-label="Ignorer la recommandation de déplacement">
+                Ignorer
+              </button>
+            </ng-container>
+          </div>
+        </div>
+        
+        <div *ngIf="filteredHives.length === 0" class="empty-state">
+          <svg class="empty-icon" width="48" height="48" viewBox="0 0 24 24" fill="currentColor" opacity="0.3">
+            <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16h-9v-6h9v6zm-10 0H3V5h8v14zm10-8H12V5h9v6z"/>
+          </svg>
+          <h3>Aucune ruche trouvée</h3>
+          <p>Aucune ruche ne correspond à vos critères de filtrage.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Site Details Modal -->
+  <div class="modal" *ngIf="showSiteDetailsModal" (click)="closeSiteDetailsModal()">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>{{ selectedSite?.name }}</h3>
+          <button class="btn-close" (click)="closeSiteDetailsModal()" aria-label="Fermer la fenêtre modale">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7A.996.996 0 105.7 7.11L10.59 12 5.7 16.89a.996.996 0 101.41 1.41L12 13.41l4.89 4.89a.996.996 0 101.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body" *ngIf="selectedSite">
+          <div class="detail-grid">
+            <div class="detail-row">
+              <span class="detail-label">Localisation:</span>
+              <span>{{ selectedSite.location }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Coordonnées:</span>
+              <span>{{ selectedSite.coordinates }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Production:</span>
+              <span>{{ selectedSite.production }} kg</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Efficacité:</span>
+              <span>{{ selectedSite.efficiency }}%</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Dernière activité:</span>
+              <span>{{ selectedSite.lastActivity }}</span>
+            </div>
+          </div>
+          
+          <div class="site-hives">
+            <h4>Ruches sur ce site</h4>
+            <table class="hives-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Production</th>
+                  <th>Efficacité</th>
+                  <th>Alertes</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let hive of selectedSite.hives">
+                  <td>{{ hive.id }}</td>
+                  <td>{{ hive.production }} kg</td>
+                  <td>{{ hive.efficiency }}%</td>
+                  <td>
+                    <span class="alert-badge" *ngFor="let alert of hive.alerts">
+                      {{ alert }}
+                    </span>
+                    <span *ngIf="!hive.alerts.length">-</span>
+                  </td>
+                  <td>
+                    <button class="btn-view" (click)="openHiveDetails(hive)" aria-label="Voir les détails de la ruche">
+                      <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15 12c0 1.654-1.346 3-3 3s-3-1.346-3-3 1.346-3 3-3 3 1.346 3 3zm9-.449s-4.252 8.449-11.985 8.449c-7.18 0-12.015-8.449-12.015-8.449s4.446-7.551 12.015-7.551c7.694 0 11.985 7.551 11.985 7.551zm-7 .449c0-2.757-2.243-5-5-5s-5 2.243-5 5 2.243 5 5 5 5-2.243 5-5z"/>
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div *ngIf="selectedSite.recommendation" class="recommendation-details">
+            <h4>Recommandation</h4>
+            <div class="recommendation-card">
+              <div class="recommendation-header">
+                <span [class.warning]="selectedSite.recommendation === 'closure'">
+                  {{ selectedSite.recommendation === 'closure' ? 'Fermeture recommandée' : 'Surveillance recommandée' }}
+                </span>
+                <span class="score" *ngIf="selectedSite.score != null" 
+                  [class.high]="selectedSite.score > 70" 
+                  [class.medium]="selectedSite.score > 40 && selectedSite.score <= 70" 
+                  [class.low]="selectedSite.score <= 40">
+                  Score: {{ selectedSite.score }}%
+                </span>
+              </div>
+              <p>{{ selectedSite.reason }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" (click)="closeSiteDetailsModal()" aria-label="Fermer la fenêtre modale">Fermer</button>
+          <button *ngIf="selectedSite?.recommendation === 'closure'" class="btn-apply-rec" 
+            (click)="applyRecommendation('site-closure', selectedSite!.id); closeSiteDetailsModal()" 
+            aria-label="Appliquer la recommandation de fermeture">
+            Appliquer la recommandation
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Hive Details Modal -->
+  <div class="modal" *ngIf="showHiveDetailsModal" (click)="closeHiveDetailsModal()">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Ruche {{ selectedHive?.id }}</h3>
+          <button class="btn-close" (click)="closeHiveDetailsModal()" aria-label="Fermer la fenêtre modale">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7A.996.996 0 105.7 7.11L10.59 12 5.7 16.89a.996.996 0 101.41 1.41L12 13.41l4.89 4.89a.996.996 0 101.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body" *ngIf="selectedHive">
+          <div class="detail-grid">
+            <div class="detail-row">
+              <span class="detail-label">Site:</span>
+              <span>{{ getSiteName(selectedHive.siteId) }}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Production:</span>
+              <span>{{ selectedHive.production }} kg</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Efficacité:</span>
+              <span>{{ selectedHive.efficiency }}%</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Dernière activité:</span>
+              <span>{{ selectedHive.lastActivity }}</span>
+            </div>
+          </div>
+          
+          <div *ngIf="selectedHive.alerts.length" class="alerts-section">
+            <h4>Alertes</h4>
+            <div class="alerts-list">
+              <div class="alert-item" *ngFor="let alert of selectedHive.alerts">
+                <svg class="icon warning" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                </svg>
+                {{ alert }}
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="selectedHive.needsRelocation" class="recommendation-details">
+            <h4>Recommandation de déplacement</h4>
+            <div class="recommendation-card">
+              <div class="recommendation-header">
+                <span>
+                  Déplacer vers {{ getSiteName(selectedHive.recommendedSiteId || '') }}
+                </span>
+              </div>
+              <p>{{ selectedHive.reason }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" (click)="closeHiveDetailsModal()" aria-label="Fermer la fenêtre modale">Fermer</button>
+          <button *ngIf="selectedHive?.needsRelocation" class="btn-apply-rec"
+            (click)="applyRecommendation('hive-relocation', selectedHive!.id); closeHiveDetailsModal()" 
+            aria-label="Appliquer la recommandation de déplacement">
+            Appliquer la recommandation
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
